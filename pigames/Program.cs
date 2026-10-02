@@ -9,8 +9,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+// Zugangsdaten der Datenbank stehen nicht im Repo: lokal per "dotnet user-secrets", sonst per
+// Umgebungsvariable ConnectionStrings__DefaultConnection (siehe README.md)
 builder.Services.AddDbContext<PigamesosContext>(options =>
-    options.UseMySQL(builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.")));
+    options.UseMySQL(builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException(
+        "Connection string 'DefaultConnection' fehlt. Lokal: dotnet user-secrets set \"ConnectionStrings:DefaultConnection\" \"<Verbindung>\", " +
+        "sonst Umgebungsvariable ConnectionStrings__DefaultConnection setzen.")));
 
 var app = builder.Build();
 
